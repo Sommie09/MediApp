@@ -1,6 +1,10 @@
 package com.example.mediapp
 
+import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +28,7 @@ class EmployeeListAdapter(private val context: Context) : RecyclerView.Adapter<E
     override fun onBindViewHolder(holder: EmployeeViewHolder, position: Int) {
        val employee : Employee = employeeList[position]
         holder.setData(employee.name, employee.designation, employee.dob, position)
-        holder.setListener()
+        holder.setListener(context, employeeList )
     }
 
     fun setEmployees(employees: ArrayList<Employee>) {
@@ -43,9 +47,11 @@ class EmployeeListAdapter(private val context: Context) : RecyclerView.Adapter<E
             this.pos = pos
         }
 
-        fun setListener() {
+        fun setListener(context: Context, employees: ArrayList<Employee> ) {
             itemView.setOnClickListener{
-                val databaseHelper = DatabaseHelper(context)
+                val intent = Intent(context, UpdateEmployeeActivity::class.java)
+                intent.putExtra(MediAppDBContract.EmployeeEntry.COLUMN_ID, employees[pos].id)
+                (context as Activity) .startActivityForResult(intent, 2)
 
             }
         }
