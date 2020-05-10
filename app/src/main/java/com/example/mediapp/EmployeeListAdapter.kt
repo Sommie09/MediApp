@@ -27,7 +27,7 @@ class EmployeeListAdapter(private val context: Context) : RecyclerView.Adapter<E
 
     override fun onBindViewHolder(holder: EmployeeViewHolder, position: Int) {
        val employee : Employee = employeeList[position]
-        holder.setData(employee.name, employee.designation, employee.dob, position)
+        holder.setData(employee.name, employee.designation, employee.dob,employee.isSurgeon, position)
         holder.setListener(context, employeeList )
     }
 
@@ -40,10 +40,14 @@ class EmployeeListAdapter(private val context: Context) : RecyclerView.Adapter<E
 
         var pos = 0
 
-        fun setData(name: String, designation: String, dob : Long, pos : Int) {
+        fun setData(name: String, designation: String, dob : Long, pos : Int, isSurgeon :Int ) {
            itemView.tvEmpName.text= name
             itemView.tvEmpDesignation.text = designation
             itemView.tvDateOfBirth.text = dob .toString()
+
+            itemView.tvIsSurgeonConfirm.text =
+                if(1 == isSurgeon) "YES"
+                     else "NO"
             this.pos = pos
         }
 

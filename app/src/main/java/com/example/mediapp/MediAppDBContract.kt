@@ -11,6 +11,7 @@ object MediAppDBContract {
         const val COLUMN_NAME = "name"
         const val COLUMN_DOB = "dob"
         const val COLUMN_DESIGNATION = "designation"
+        const val COLUMN_SURGEON = "is_surgeon"
 
         const val SQL_CREATE_ENTRIES : String =
             "CREATE TABLE $TABLE_NAME (" +
@@ -20,5 +21,12 @@ object MediAppDBContract {
                     "$COLUMN_DESIGNATION TEXT NOT NULL)"
 
         const val SQL_DROP_TABLE = "DROP TABLE IF EXISTS $TABLE_NAME"
+
+        //Add surgeon column in the employee table
+        const val ALTER_TABLE_1 = "ALTER TABLE " +
+                "$TABLE_NAME " +
+                "ADD COLUMN " +
+                "$COLUMN_SURGEON INTEGER DEFAULT 0"
+
     }
 }

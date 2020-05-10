@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_add_employee.*
 import org.jetbrains.annotations.Contract
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.mediapp.MediAppDBContract.EmployeeEntry as EmployeeEntry
 
 class AddEmployeeActivity : AppCompatActivity() {
 
@@ -58,14 +59,16 @@ class AddEmployeeActivity : AppCompatActivity() {
             val name : String = etEmpName?.text.toString()
             val designation : String = etDesignation?.text.toString()
             val dob : Long = myCalendar.timeInMillis
+            val isSurgeon= if(sSurgeon.isChecked) 1 else 0
 
             val db : SQLiteDatabase = databaseHelper.writableDatabase
             val values = ContentValues()
-            values.put(MediAppDBContract.EmployeeEntry.COLUMN_NAME, name)
-            values.put(MediAppDBContract.EmployeeEntry.COLUMN_DESIGNATION, designation)
-            values.put(MediAppDBContract.EmployeeEntry.COLUMN_DOB, dob)
+            values.put(EmployeeEntry.COLUMN_NAME, name)
+            values.put(EmployeeEntry.COLUMN_DESIGNATION, designation)
+            values.put(EmployeeEntry.COLUMN_DOB, dob)
+            values.put(EmployeeEntry.COLUMN_SURGEON, isSurgeon)
 
-            var result : Long = db.insert(MediAppDBContract.EmployeeEntry.TABLE_NAME, null, values)
+            var result : Long = db.insert(EmployeeEntry.TABLE_NAME, null, values)
             setResult(Activity.RESULT_OK, Intent())
 
             Toast.makeText(applicationContext, "Employee Added", Toast.LENGTH_SHORT).show()

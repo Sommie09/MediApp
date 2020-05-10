@@ -1,5 +1,6 @@
 package com.example.mediapp
 
+import android.content.ContentValues
 import android.database.Cursor
 import com.example.mediapp.MediAppDBContract.EmployeeEntry
 
@@ -13,7 +14,9 @@ object DataManager {
              EmployeeEntry.COLUMN_ID,
              EmployeeEntry.COLUMN_NAME,
              EmployeeEntry.COLUMN_DOB,
-             EmployeeEntry.COLUMN_DESIGNATION
+             EmployeeEntry.COLUMN_DESIGNATION,
+             EmployeeEntry.COLUMN_SURGEON
+
          )
 
          val cursor : Cursor = db.query(
@@ -25,14 +28,16 @@ object DataManager {
          val namePos : Int = cursor.getColumnIndex(EmployeeEntry.COLUMN_NAME)
          val dobPos : Int = cursor.getColumnIndex(EmployeeEntry.COLUMN_DOB)
          val designationPos : Int = cursor.getColumnIndex(EmployeeEntry.COLUMN_DESIGNATION )
+         val surgeonPos = cursor.getColumnIndex(EmployeeEntry.COLUMN_SURGEON)
 
          while(cursor.moveToNext()){
              val id :String = cursor.getString(idPos)
              val name :String = cursor.getString(namePos)
              val dob :Long = cursor.getLong(dobPos)
              val designation :String = cursor.getString(designationPos)
+             val surgeon = cursor.getInt(surgeonPos)
 
-             employees.add(Employee(id,name, dob,designation))
+             employees.add(Employee(id,name, dob,designation, surgeon))
          }
 
          cursor.close()
@@ -69,13 +74,17 @@ object DataManager {
          val namePos : Int = cursor.getColumnIndex(EmployeeEntry.COLUMN_NAME)
          val dobPos : Int = cursor.getColumnIndex(EmployeeEntry.COLUMN_DOB)
          val designationPos : Int = cursor.getColumnIndex(EmployeeEntry.COLUMN_DESIGNATION )
+         val surgeonPos = cursor.getColumnIndex(EmployeeEntry.COLUMN_SURGEON)
 
          while(cursor.moveToNext()){
              val name :String = cursor.getString(namePos)
              val dob :Long = cursor.getLong(dobPos)
              val designation :String = cursor.getString(designationPos)
+             val surgeon = cursor.getInt(surgeonPos)
 
-             employee = Employee(empId, name, dob, designation)
+
+
+             employee = Employee(empId, name, dob, designation, surgeonPos )
 
          }
 
@@ -85,4 +94,34 @@ object DataManager {
 
 
      }
+
+     fun updateEmployee(databaseHelper: DatabaseHelper, employee: Employee) {
+         val db = databaseHelper.writableDatabase
+
+         val values = ContentValues()
+         values.put(EmployeeEntry.COLUMN_NAME, employee.name)
+         values.put(EmployeeEntry.COLUMN_DESIGNATION, employee.designation)
+         values.put(EmployeeEntry.COLUMN_DOB, employee.dob)
+         values.put(EmployeeEntry.COLUMN_SURGEON, employee.isSurgeon)
+
+         val selection = EmployeeEntry.COLUMN_ID + " LIKE ? "
+         val selectionArgs = arrayOf(employee.id)
+
+         db.update(EmployeeEntry.TABLE_NAME, values, selection, selectionArgs)
+     }
+
+    fun deleteEmployee(databaseHelper: DatabaseHelper, empId: String): Int{
+        val db = databaseHelper.writableDatabase
+
+        val selection = EmployeeEntry.COLUMN_ID + " LIKE ? "
+        val selectionArgs = arrayOf(empId)
+
+        return db.delete(EmployeeEntry.TABLE_NAME, selection, selectionArgs)
+     }
+
+    fun deleteAllEmployee(databaseHelper: DatabaseHelper): Int {
+         val db = databaseHelper.writableDatabase
+        return db.delete(EmployeeEntry.TABLE_NAME, "1", null)
+
+    }
 }
